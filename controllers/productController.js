@@ -1,9 +1,8 @@
-// controllers/productController.js (MODIFICAR)
+// controllers/productController.js
 
 const productService = require('../services/productService');
 
-// NOTA: Los controladores son delgados, solo manejan req/res.
-// Las funciones son casi iguales a las que tenía, pero garantizando que llaman al servicio.
+// Nota: Los controladores solo llaman al servicio y manejan la respuesta HTTP.
 
 exports.getAllProducts = async (req, res) => {
     try {
@@ -30,7 +29,7 @@ exports.createProduct = async (req, res) => {
         const product = await productService.createProduct(req.body);
         res.status(201).json({ msg: 'Producto creado correctamente', product });
     } catch (err) {
-        // 500 o 400 si falla la validación (ej. falta el ID de categoría)
+        // 500 o 400 si falla la validación (ej. falta el ID de categoría o la clave)
         res.status(500).json({ msg: err.message });
     }
 };

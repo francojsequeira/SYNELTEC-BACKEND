@@ -1,8 +1,6 @@
-// controllers/userController.js (MODIFICAR)
+// controllers/userController.js 
 
 const userService = require('../services/userService');
-
-// NOTA: Mantengo el manejo de errores 'try...catch' tradicional.
 
 exports.registerUser = async (req, res) => {
     try {
@@ -41,7 +39,7 @@ exports.loginUser = async (req, res) => {
             },
         });
     } catch (err) {
-        // El servicio lanza "Credenciales inválidas", respondemos con 400
+        // El servicio lanza "Credenciales inválidas" o "Usuario ya existe", respondemos con 400
         res.status(400).json({ msg: err.message });
     }
 };
