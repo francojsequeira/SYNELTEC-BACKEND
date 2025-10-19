@@ -37,6 +37,9 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
+// Exporto la app para que Vercel la pueda usar
+module.exports = app;
+
 /* ********************************************************** */
 
 const User = require('./models/User'); 
