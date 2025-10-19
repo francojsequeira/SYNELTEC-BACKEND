@@ -1,99 +1,49 @@
 // controllers/productController.js
-// Funciones para CRUD de productos (Lógica de base de datos)
+// Controlador liviano que llama a productService
 
-const Product = require('../models/Product');
+const productService = require('../services/productService');
 
-/**
- * Obtener todos los productos (Público)
- */
 exports.getAllProducts = async (req, res) => {
     try {
-        const filters = { ...req.query }; 
-        const products = await Product.find(filters);
+        const products = await productService.getAllProducts(req.query);
         res.json(products);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al obtener los productos' });
+        res.status(500).json({ msg: err.message });
     }
 };
 
-/**
- * Obtener un producto por ID (Público)
- */
 exports.getProductById = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ msg: 'Producto no encontrado' });
-        }
+        const product = await productService.getProductById(req.params.id);
         res.json(product);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al obtener el producto' });
+        res.status(404).json({ msg: err.message });
     }
 };
 
-/**
- * Crear un nuevo producto (Protegido por Admin)
- */
 exports.createProduct = async (req, res) => {
-    // NOTA DE APRENDIZAJE: La validación de que solo un admin puede hacer esto
-    // ya la hizo 'auth' e 'isAdmin' en las rutas.
     try {
-        // Aquí ajusté los campos a title, description, price, stock, category
-        const { title, description, price, stock, category } = req.body; 
-
-        const product = new Product({
-            title, 
-            description,
-            price,
-            stock,
-            category
-        });
-
-        await product.save();
+        const product = await productService.createProduct(req.body);
         res.status(201).json({ msg: 'Producto creado correctamente', product });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al crear el producto' });
+        res.status(500).json({ msg: err.message });
     }
 };
 
-/**
- * Actualizar un producto existente (Protegido por Admin)
- */
 exports.updateProduct = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updates = req.body;
-
-        const product = await Product.findByIdAndUpdate(id, updates, { new: true }); 
-        if (!product) {
-            return res.status(404).json({ msg: 'Producto no encontrado' });
-        }
-
+        const product = await productService.updateProduct(req.params.id, req.body);
         res.json({ msg: 'Producto actualizado', product });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al actualizar el producto' });
+        res.status(404).json({ msg: err.message });
     }
 };
 
-/**
- * Eliminar un producto (Protegido por Admin)
- */
 exports.deleteProduct = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const product = await Product.findByIdAndDelete(id);
-        if (!product) {
-            return res.status(404).json({ msg: 'Producto no encontrado' });
-        }
-
+        await productService.deleteProduct(req.params.id);
         res.json({ msg: 'Producto eliminado correctamente' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al eliminar el producto' });
+        res.status(404).json({ msg: err.message });
     }
 };

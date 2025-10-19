@@ -10,6 +10,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const pricingRoutes = require("./routes/pricingRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
 
@@ -24,6 +25,8 @@ connectDB(process.env.MONGODB_URI);
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use("/api/pricing", pricingRoutes); // acá conecto las rutas de pricing
+app.use("/api/categories", categoryRoutes);
+
 // ruta de prueba / salud
 app.get('/', (req, res) => {
   res.json({ msg: 'API Syneltec funcionando' });
