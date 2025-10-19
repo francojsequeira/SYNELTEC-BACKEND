@@ -1,13 +1,16 @@
-// controllers/productController.js
-// Controlador liviano que llama a productService
+// controllers/productController.js (MODIFICAR)
 
 const productService = require('../services/productService');
+
+// NOTA: Los controladores son delgados, solo manejan req/res.
+// Las funciones son casi iguales a las que tenía, pero garantizando que llaman al servicio.
 
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await productService.getAllProducts(req.query);
         res.json(products);
     } catch (err) {
+        // 500 para errores de DB o inesperados
         res.status(500).json({ msg: err.message });
     }
 };
@@ -17,6 +20,7 @@ exports.getProductById = async (req, res) => {
         const product = await productService.getProductById(req.params.id);
         res.json(product);
     } catch (err) {
+        // 404 si el servicio lanza 'Producto no encontrado'
         res.status(404).json({ msg: err.message });
     }
 };
@@ -26,6 +30,7 @@ exports.createProduct = async (req, res) => {
         const product = await productService.createProduct(req.body);
         res.status(201).json({ msg: 'Producto creado correctamente', product });
     } catch (err) {
+        // 500 o 400 si falla la validación (ej. falta el ID de categoría)
         res.status(500).json({ msg: err.message });
     }
 };
@@ -35,6 +40,7 @@ exports.updateProduct = async (req, res) => {
         const product = await productService.updateProduct(req.params.id, req.body);
         res.json({ msg: 'Producto actualizado', product });
     } catch (err) {
+        // 404 si no encuentra el producto
         res.status(404).json({ msg: err.message });
     }
 };
@@ -44,6 +50,7 @@ exports.deleteProduct = async (req, res) => {
         await productService.deleteProduct(req.params.id);
         res.json({ msg: 'Producto eliminado correctamente' });
     } catch (err) {
+        // 404 si no encuentra el producto
         res.status(404).json({ msg: err.message });
     }
 };
