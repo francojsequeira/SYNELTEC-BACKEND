@@ -1,8 +1,11 @@
-SYNELTEC Backend - Documentación Técnica
-Descripción general
-API REST desarrollada con Node.js, Express y MongoDB para la gestión de usuarios, productos, categorías y reglas de precios dinámicas. Incluye autenticación mediante JWT, control de roles (usuario / administrador) y un CRUD completo conectado a una base de datos MongoDB Atlas.
-Características principales
+# SYNELTEC API - Sistema de Gestión Comercial
 
+## Descripción
+API REST desarrollada para el sistema de gestión comercial de Syneltec, implementando el backend del TP1. 
+Permite la gestión completa de usuarios, productos, categorías y un innovador sistema de reglas de precios dinámicas. 
+La API facilita la administración del catálogo de productos, control de usuarios y precios personalizados por cliente.
+
+## Características Principales
 - API REST modular basada en Express
 - Conexión a MongoDB Atlas con Mongoose
 - Autenticación y autorización mediante JWT
@@ -12,132 +15,202 @@ Características principales
 - Variables de entorno gestionadas con dotenv
 - Despliegue en Vercel
 - Documentación compatible con Postman
-  Estructura del proyecto
-  SYNELTEC-BACKEND/
-  ├── config/
-  │ └── db.js # Conexión a MongoDB
-  ├── controllers/
-  │ ├── authController.js
-  │ ├── productController.js
-  │ ├── categoryController.js
-  │ └── pricingController.js
-  ├── middleware/
-  │ ├── auth.js
-  │ └── isAdmin.js
-  ├── models/
-  │ ├── User.js
-  │ ├── Product.js
-  │ ├── Category.js
-  │ └── PricingRule.js
-  ├── routes/
-  │ ├── authRoutes.js
-  │ ├── productRoutes.js
-  │ ├── categoryRoutes.js
-  │ └── pricingRoutes.js
-  ├── .env.example
-  ├── vercel.json
-  ├── package.json
-  └── server.js
-  Instalación local
 
-1. Clonar el repositorio:
-   git clone https://github.com/francojsequeira/SYNELTEC-BACKEND.git
-   cd SYNELTEC-BACKEND
+## Tecnologías Utilizadas
+- Node.js - Entorno de ejecución
+- Express.js - Framework web
+- MongoDB - Base de datos NoSQL
+- Mongoose - ODM para MongoDB
+- JWT (JSON Web Tokens) - Autenticación
+- bcryptjs - Encriptación de contraseñas
+- dotenv - Gestión de variables de entorno
+- Vercel - Plataforma de despliegue
 
-2. Instalar dependencias:
-   npm install
+## Estructura del Proyecto
+```
+SYNELTEC-BACKEND/
+├── config/
+│   └── db.js              # Conexión a MongoDB
+├── controllers/
+│   ├── authController.js
+│   ├── productController.js
+│   ├── categoryController.js
+│   └── pricingController.js
+├── middleware/
+│   ├── auth.js
+│   └── isAdmin.js
+├── models/
+│   ├── User.js
+│   ├── Product.js
+│   ├── Category.js
+│   └── PricingRule.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── productRoutes.js
+│   ├── categoryRoutes.js
+│   └── pricingRoutes.js
+├── .env.example
+├── vercel.json
+├── package.json
+└── server.js
+```
+## Cómo Correr el Proyecto
 
-3. Crear el archivo .env con:
-   PORT=4000
-   MONGODB_URI=tu_string_de_conexion_a_mongo
-   JWT_SECRET=tu_clave_secreta
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/francojsequeira/SYNELTEC-BACKEND.git
+cd SYNELTEC-BACKEND
+```
 
-4. Iniciar el servidor:
-   npm run dev
+### 2. Instalar dependencias
+```bash
+npm install
+```
 
-El backend estará disponible en http://localhost:4000
-Configuración de variables de entorno
-El archivo .env debe incluir:
-PORT: Puerto donde corre el servidor
-MONGODB_URI: URL de conexión a MongoDB Atlas
-JWT_SECRET: Clave secreta para firmar tokens JWT
-Conexión con MongoDB Atlas
+### 3. Configurar variables de entorno
+Crear un archivo `.env` en la raíz del proyecto con la siguiente estructura:
+```
+PORT=4000                              # Puerto donde correrá el servidor
+MONGODB_URI=tu_cadena_de_conexion     # URL de conexión a MongoDB Atlas
+JWT_SECRET=tu_clave_secreta           # Clave para firmar tokens JWT
+```
 
-1. Ingresar a https://www.mongodb.com/
-2. Crear cuenta o iniciar sesión
-3. Crear un cluster gratuito (Free Tier)
-4. En Network Access, permitir acceso desde cualquier IP (0.0.0.0/0)
-5. Crear un usuario de base de datos con contraseña
-6. Obtener el connection string desde 'Connect -> Drivers'
-7. Agregar ese string en la variable MONGODB_URI del archivo .env
-   Despliegue en Vercel
-8. Crear archivo vercel.json:
-   {
-   "version": 2,
-   "rewrites": [
-   { "source": "/api/(.*)", "destination": "/api" }
-   ]
-   }
+### 4. Iniciar la aplicación
+```bash
+npm start
+```
 
-9. Subir el proyecto a GitHub
-10. En Vercel -> Project Settings -> Environment Variables agregar:
-    PORT=4000
-    MONGODB_URI=tu_conexion_a_mongo
-    JWT_SECRET=tu_clave_secreta
-11. Realizar el deploy automático con git push
-    Endpoints principales
-    Autenticación:
-    POST /api/auth/register -> Registro de usuario
-    POST /api/auth/login -> Login, devuelve token JWT
-    GET /api/auth/profile -> Perfil del usuario logueado (requiere JWT)
+El servidor estará disponible en `http://localhost:4000`
 
-Productos:
-GET /api/products -> Listar productos
-GET /api/products/:id -> Ver detalle
-POST /api/products -> Crear (requiere admin)
-PUT /api/products/:id -> Editar (requiere admin)
-DELETE /api/products/:id -> Eliminar (requiere admin)
+## Endpoints de la API
 
-Categorías:
-GET /api/categories -> Listar
-POST /api/categories -> Crear (requiere admin)
-PUT /api/categories/:id -> Editar (requiere admin)
-DELETE /api/categories/:id -> Eliminar (requiere admin)
+### Autenticación
 
-Reglas de precios:
-POST /api/pricing -> Crear regla
-GET /api/pricing/:productId/:userId -> Consultar precio final
-Autenticación y roles
-El sistema usa JWT (Json Web Token) para autenticar usuarios.
+#### POST /api/auth/register
+Registro de nuevo usuario
+- **Descripción**: Crea una nueva cuenta de usuario
+- **Requiere**: No requiere autenticación
 
-1. El usuario inicia sesión y el backend genera un token JWT.
-2. El token se incluye en el encabezado 'Authorization: Bearer <token>'.
-3. Los middleware auth.js y isAdmin.js verifican el token y los permisos.
-   Pruebas con Postman
-4. Iniciar el backend con 'npm run dev'
-5. Abrir Postman
-6. Crear colección 'SYNELTEC API'
-7. Agregar requests para login, crear y listar productos
-8. Copiar el token del login y agregarlo en los headers:
-   Authorization: Bearer TU_TOKEN
-   Tecnologías utilizadas
+#### POST /api/auth/login
+Inicio de sesión
+- **Descripción**: Autentica al usuario y devuelve un token JWT
+- **Requiere**: No requiere autenticación
 
-- Node.js
-- Express.js
-- MongoDB + Mongoose
-- JWT
-- bcryptjs
-- dotenv
-- Vercel
-  Buenas prácticas aplicadas
-- Arquitectura MVC (Model - View - Controller)
-- Separación de rutas, controladores y modelos
-- Middlewares reutilizables
-- Variables de entorno seguras
-- Manejo de errores con try/catch
-- Código limpio y documentado
-- Documentación completa en Postman y README
-  Autor
-  Franco Sequeira
-  GitHub: https://github.com/francojsequeira
-  Proyecto desarrollado como parte del curso Full Stack Developer.
+#### GET /api/auth/profile
+Perfil de usuario
+- **Descripción**: Obtiene los datos del usuario autenticado
+- **Requiere**: Token JWT
+
+### Productos
+
+#### GET /api/products
+- **Descripción**: Obtiene lista de todos los productos
+- **Requiere**: No requiere autenticación
+
+#### GET /api/products/:id
+- **Descripción**: Obtiene detalle de un producto específico
+- **Requiere**: No requiere autenticación
+
+#### POST /api/products
+- **Descripción**: Crea un nuevo producto
+- **Requiere**: Token JWT + Rol Admin
+
+#### PUT /api/products/:id
+- **Descripción**: Actualiza un producto existente
+- **Requiere**: Token JWT + Rol Admin
+
+#### DELETE /api/products/:id
+- **Descripción**: Elimina un producto
+- **Requiere**: Token JWT + Rol Admin
+
+### Categorías
+
+#### GET /api/categories
+- **Descripción**: Lista todas las categorías
+- **Requiere**: No requiere autenticación
+
+#### POST /api/categories
+- **Descripción**: Crea una nueva categoría
+- **Requiere**: Token JWT + Rol Admin
+
+#### PUT /api/categories/:id
+- **Descripción**: Actualiza una categoría existente
+- **Requiere**: Token JWT + Rol Admin
+
+#### DELETE /api/categories/:id
+- **Descripción**: Elimina una categoría
+- **Requiere**: Token JWT + Rol Admin
+
+### Reglas de Precios
+
+#### POST /api/pricing
+- **Descripción**: Crea una nueva regla de precio
+- **Requiere**: Token JWT + Rol Admin
+
+#### GET /api/pricing/:productId/:userId
+- **Descripción**: Consulta el precio final de un producto para un usuario específico
+- **Requiere**: Token JWT
+
+## Ejemplos de Datos Mock
+
+### Registro de Usuario (POST /api/auth/register)
+```json
+{
+  "name": "Juan Pérez",
+  "email": "juan@example.com",
+  "password": "contraseña123",
+  "role": "user"
+}
+```
+
+### Login (POST /api/auth/login)
+```json
+{
+  "email": "juan@example.com",
+  "password": "contraseña123"
+}
+```
+
+### Crear Producto (POST /api/products)
+```json
+{
+  "name": "Monitor LED 24\"",
+  "description": "Monitor LED Full HD 1080p",
+  "price": 89999.99,
+  "category": "64f5e8b1c52864abf9876543",
+  "stock": 10,
+  "specifications": {
+    "brand": "TechView",
+    "model": "M24-LED",
+    "resolution": "1920x1080",
+    "refreshRate": "75Hz"
+  }
+}
+```
+
+### Crear Categoría (POST /api/categories)
+```json
+{
+  "name": "Monitores",
+  "description": "Monitores y pantallas",
+  "active": true
+}
+```
+
+### Crear Regla de Precio (POST /api/pricing)
+```json
+{
+  "type": "category",
+  "categoryId": "64f5e8b1c52864abf9876543",
+  "userId": "64f5e8b1c52864abf9876544",
+  "discountPercentage": 10,
+  "startDate": "2023-11-01",
+  "endDate": "2023-12-31"
+}
+```
+
+## Autor
+Franco Sequeira
+- GitHub: https://github.com/francojsequeira
+
+*Proyecto desarrollado como parte del curso Full Stack Developer.*
